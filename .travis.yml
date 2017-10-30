@@ -7,8 +7,9 @@ before_deploy:
 deploy:
 - provider: releases
   skip_cleanup: true
-  file:
-  - contrib/blender/funscripting.zip
+  api_key:
+    secure: k7Cgs1NTprlX2l51yAbYJMGDzfHKR4ZJ8htJr/yq80FkLu9eXOWjUhZoVkKjuydmgvbgS+W+AoezhM2wIi5vzPRxwg5SFhgnE7+mZAyPVXGDihEhlXjixQNVylt/AXFtowhp62dtHUxqHHjH9SsOEfsWZz/mP2HguSkSCbseX/KwDGTCCZqPIqQXyQVdrg9DpAUXODLCM6xO8ucc6PrCQbH8xbCvd78eJWYM9RwMJ/E8/g3maKGI0ufJrBibmgAzFMhE/zCQmeYCiTRHDhd3JlU+0vhumJCfBkZMC3s4jPqJxHtA5ZipuRPzM0SKtzCMN9DfwNw2g39VovLLRpMm45ibNUmoEnJuCffVkBsl5jS1KKAwn2UCUE8agz7BtohyHKSBuVbBPFm5rUmFN3XGTp0lkjBWeiwAntp12GhCNzGzPfOJ7Ndo+vgPSnguHaIyjH2mI4fSs3hO/LD5oEYvrHcZLeHRAUoIT8iuIZLfgZPdvN6L+If1hUjDiXiVt4xWUI15CR4amvJkb1Qo4E3hNCi/mC1MD7mumYi8i+ylYt4OgsQW7SXhAmL2rpR3lNvtUNViUtxJHMZKhHbPo5Y9RgL+Ro6PasIgaWwQFJuGoCmCgCxWF/ExgYudPyeA3uY3uUvgsude1tedWn5hg9/FCyKqST4iawXzjCXBnq9yDv0=
+  file: funscripting.zip
   on:
     tags: true
     repo: funjack/funscripting
