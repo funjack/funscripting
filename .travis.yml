@@ -1,0 +1,16 @@
+language: python
+install: true
+os:
+- linux
+before_deploy:
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make funscripting.zip; fi
+deploy:
+- provider: releases
+  skip_cleanup: true
+  file:
+  - contrib/blender/funscripting.zip
+  on:
+    tags: true
+    repo: funjack/funscripting
+    branch: "master"
+    condition: $TRAVIS_OS_NAME = linux
