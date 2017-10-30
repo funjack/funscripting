@@ -1,7 +1,8 @@
 language: python
-install: true
 os:
 - linux
+install: true
+script: python tests.py
 before_deploy:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make funscripting.zip; fi
 deploy:
