@@ -114,7 +114,7 @@ def last_stroke(seq, since_frame):
              {"frame": startframe, "value": stroke[1]["value"] },
              {"frame": endframe, "value": stroke[0]["value"] } ]
 
-def create_funscript(keyframes, inverted):
+def create_funscript(keyframes, inverted, range=90):
     """Create Funscript from keyframes."""
     script = []
     for kf in keyframes:
@@ -127,7 +127,7 @@ def create_funscript(keyframes, inverted):
         elif value > 100:
             value = 100
         script.append({"at": time, "pos": value})
-    return {"version": "1.0", "inverted": inverted, "range": 100, "actions": script}
+    return {"version": "1.0", "inverted": inverted, "range": range, "actions": script}
 
 def launch_keyframes(name):
     """Return all keyframes from all actions fcurves in prop 'launch'."""

@@ -34,6 +34,40 @@ import json
 
 from . import fun_script
 
+class FunscriptSettings(bpy.types.PropertyGroup):
+    """Funscript Settings.
+
+    Funscript user settings that are used by all other components.
+    """
+    script_range = bpy.props.IntProperty(
+        name = "Range",
+        description = "Range of the Launch to use",
+        subtype = "PERCENTAGE",
+        default = 90,
+        min = 10,
+        max = 100)
+    script_min_speed = bpy.props.IntProperty(
+        name = "Min speed",
+        description="Minimal speed to hint for",
+        subtype = "PERCENTAGE",
+        default = 20,
+        min = 20,
+        max = 80)
+    script_max_speed = bpy.props.IntProperty(
+        name = "Max speed",
+        description="Maximum speed to hint for",
+        subtype = "PERCENTAGE",
+        default = 80,
+        min = 20,
+        max = 90)
+    script_interval = bpy.props.IntProperty(
+        name = "Min interval",
+        description="Minimal interval in ms to alert on",
+        subtype = "TIME",
+        default = 100,
+        min = 100,
+        max = 200)
+
 class FunscriptPanel(bpy.types.Panel):
     """Funscript UI panel.
 
@@ -51,6 +85,7 @@ class FunscriptPanel(bpy.types.Panel):
     def limitinfo(self, context):
         """Labels with hints of the limitations"""
         scene = context.scene
+        settings = scene.funscripting
         seq = context.selected_sequences[0]
         keyframes = fun_script.launch_keyframes(seq.name)
         layout = self.layout
@@ -67,11 +102,11 @@ class FunscriptPanel(bpy.types.Panel):
                     last = {"frame":frame, "value":value}
                     break
         interval = fun_script.frame_to_ms(scene.frame_current) - fun_script.frame_to_ms(last["frame"])
-        icon = "FILE_TICK" if interval > 100 or last["frame"] == 1 else "ERROR"
+        icon = "FILE_TICK" if interval > settings.script_interval or last["frame"] == 1 else "ERROR"
         if interval > 1000:
             icon = "TIME"
-        mindist = fun_script.launch_distance(20, interval)
-        maxdist = fun_script.launch_distance(80, interval)
+        mindist = fun_script.launch_distance(settings.script_min_speed, interval)
+        maxdist = fun_script.launch_distance(settings.script_max_speed, interval)
 
         col.label(text="Previous: %d" % last["value"])
         col = row.column(align=True)
@@ -81,9 +116,9 @@ class FunscriptPanel(bpy.types.Panel):
         col.label(text="Interval: %d ms" % interval, icon=icon)
         row = layout.row(align=True)
         col = row.column(align=True)
-        col.label("Slowest: %d" % mindist)
+        col.label("Slowest: %d" % int(mindist*(settings.script_range/100.0)))
         col = row.column(align=True)
-        col.label("Fastest: %d" % maxdist)
+        col.label("Fastest: %d" % int(maxdist*(settings.script_range/100.0)))
 
     def draw(self, context):
         self.limitinfo(context)
@@ -109,6 +144,21 @@ class FunscriptPanel(bpy.types.Panel):
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
         row.operator("funscript.export")
+
+        row = layout.row(align=True)
+        row.alignment = 'EXPAND'
+        box = row.box()
+        box.label("Hint settings")
+        col = box.column(align=True)
+        row = col.row(align=True)
+        row.alignment = 'EXPAND'
+        row.prop(context.scene.funscripting, "script_range")
+        row.prop(context.scene.funscripting, "script_interval")
+        row = col.row(align=True)
+        row.alignment = 'EXPAND'
+        row.prop(context.scene.funscripting, "script_min_speed")
+        row.prop(context.scene.funscripting, "script_max_speed")
+
 
 class FunscriptPositionButton(bpy.types.Operator):
     """Position input button.
@@ -209,7 +259,10 @@ class FunscriptExport(bpy.types.Operator):
             return{'CANCELLED'}
         seq = context.selected_sequences[0]
         keyframes = fun_script.launch_keyframes(seq.name)
-        script = fun_script.create_funscript(keyframes, self.inverted)
+        script = fun_script.create_funscript(
+                keyframes,
+                self.inverted,
+                context.scene.funscripting.script_range)
         with open(self.filepath, 'w') as outfile:
             json.dump(script, outfile)
         return {'FINISHED'}

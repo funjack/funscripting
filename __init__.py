@@ -41,21 +41,15 @@ bl_info = {
 if "bpy" in locals():
     import importlib
     importlib.reload(fun_ui)
-else:
-    from . import fun_ui
 
 import bpy
+from . import fun_ui
 
 addon_keymaps = []
 
 def register():
-    bpy.utils.register_class(fun_ui.FunscriptPositionButton)
-    bpy.utils.register_class(fun_ui.FunscriptDeleteButton)
-    bpy.utils.register_class(fun_ui.FunscriptRepeatButton)
-    bpy.utils.register_class(fun_ui.FunscriptFillButton)
-    bpy.utils.register_class(fun_ui.FunscriptExport)
-    bpy.utils.register_class(fun_ui.FunscriptImport)
-    bpy.utils.register_class(fun_ui.FunscriptPanel)
+    bpy.utils.register_module(__name__)
+    bpy.types.Scene.funscripting = bpy.props.PointerProperty(type=fun_ui.FunscriptSettings)
 
     # handle the keymap
     wm = bpy.context.window_manager
@@ -138,13 +132,8 @@ def unregister():
         km.keymap_items.remove(kmi)
     addon_keymaps.clear()
 
-    bpy.utils.unregister_class(fun_ui.FunscriptPanel)
-    bpy.utils.unregister_class(fun_ui.FunscriptImport)
-    bpy.utils.unregister_class(fun_ui.FunscriptExport)
-    bpy.utils.unregister_class(fun_ui.FunscriptFillButton)
-    bpy.utils.unregister_class(fun_ui.FunscriptRepeatButton)
-    bpy.utils.unregister_class(fun_ui.FunscriptDeleteButton)
-    bpy.utils.unregister_class(fun_ui.FunscriptPositionButton)
+    del bpy.types.Scene.funscripting
+    bpy.utils.unregister_module(__name__)
 
 if __name__ == "__main__":
     register()
