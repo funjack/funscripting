@@ -19,7 +19,7 @@ Installation
 ------------
 
 0. Download and install [Blender](https://www.blender.org/)
-1. Download `funscripting.zip` from the [releases](https://github.com/funjack/launchcontrol/releases) page
+1. Download `funscripting.zip` from the [releases](https://github.com/funjack/funscripting/releases) page
 2. Start Blender
 3. Open User Preferences (Ctrl+Alt+U)
 4. Click the Add-ons tab
