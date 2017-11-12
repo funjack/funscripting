@@ -90,6 +90,9 @@ class FunscriptPanel(bpy.types.Panel):
         keyframes = fun_script.launch_keyframes(seq.name)
         layout = self.layout
         row = layout.row(align=True)
+        box = row.box()
+        bcol = box.column(align=True)
+        row = bcol.row(align=True)
         col = row.column(align=True)
         last = {"frame":1, "value":0}
         if keyframes is not None:
@@ -111,10 +114,10 @@ class FunscriptPanel(bpy.types.Panel):
         col.label(text="Previous: %d" % last["value"])
         col = row.column(align=True)
         col.operator("funscript.delete", text="Delete").frame=last["frame"]
-        row = layout.row(align=True)
+        row = bcol.row(align=True)
         col = row.column(align=True)
         col.label(text="Interval: %d ms" % interval, icon=icon)
-        row = layout.row(align=True)
+        row = bcol.row(align=True)
         col = row.column(align=True)
         col.label("Slowest: %d" % int(mindist*(settings.script_range/100.0)))
         col = row.column(align=True)
@@ -123,39 +126,47 @@ class FunscriptPanel(bpy.types.Panel):
     def draw(self, context):
         self.limitinfo(context)
         layout = self.layout
+        row = layout.row(align=True)
+        box = row.box()
+        box.label(text="Insert position")
+        bcol = box.column(align=True)
         for x in [0, 10, 40, 70, 100]:
-            row = layout.row(align=True)
+            row = bcol.row(align=True)
             row.alignment = 'EXPAND'
             if x == 0 or x == 100:
                 row.operator("funscript.position", text=str(x)).launchPosition=x
             else:
                 for i in range(x,x+30,10):
                     row.operator("funscript.position", text=str(i)).launchPosition=i
-        layout.label(text="Generate")
+
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
+        box = row.box()
+        box.label(text="Generate actions")
+        bcol = box.column(align=True)
+        row = bcol.row(align=True)
         row.operator("funscript.repeat")
         row.operator("funscript.fill")
-        layout.label(text="Import funscript")
+
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
+        box = row.box()
+        box.label("Import/Export Funscript")
+        bcol = box.column(align=True)
+        row = bcol.row(align=True)
         row.operator("funscript.import")
-        layout.label(text="Export funscript")
-        row = layout.row(align=True)
-        row.alignment = 'EXPAND'
+        row = bcol.row(align=True)
         row.operator("funscript.export")
 
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
         box = row.box()
         box.label("Hint settings")
-        col = box.column(align=True)
-        row = col.row(align=True)
-        row.alignment = 'EXPAND'
+        bcol = box.column(align=True)
+        row = bcol.row(align=True)
         row.prop(context.scene.funscripting, "script_range")
         row.prop(context.scene.funscripting, "script_interval")
-        row = col.row(align=True)
-        row.alignment = 'EXPAND'
+        row = bcol.row(align=True)
         row.prop(context.scene.funscripting, "script_min_speed")
         row.prop(context.scene.funscripting, "script_max_speed")
 
