@@ -128,8 +128,8 @@ class FunscriptPanel(bpy.types.Panel):
         layout = self.layout
         row = layout.row(align=True)
         box = row.box()
-        box.label(text="Insert position")
         bcol = box.column(align=True)
+        bcol.label(text="Insert position")
         for x in [0, 10, 40, 70, 100]:
             row = bcol.row(align=True)
             row.alignment = 'EXPAND'
@@ -142,8 +142,8 @@ class FunscriptPanel(bpy.types.Panel):
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
         box = row.box()
-        box.label(text="Generate actions")
         bcol = box.column(align=True)
+        bcol.label(text="Generate actions")
         row = bcol.row(align=True)
         row.operator("funscript.repeat")
         row.operator("funscript.fill")
@@ -151,8 +151,8 @@ class FunscriptPanel(bpy.types.Panel):
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
         box = row.box()
-        box.label(text="Selection")
         bcol = box.column(align=True)
+        bcol.label(text="Selection operations")
         row = bcol.row(align=True)
         row.operator("funscript.selectioninvert")
         row = bcol.row(align=True)
@@ -162,8 +162,8 @@ class FunscriptPanel(bpy.types.Panel):
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
         box = row.box()
-        box.label("Import/Export Funscript")
         bcol = box.column(align=True)
+        bcol.label("Import/Export Funscript")
         row = bcol.row(align=True)
         row.operator("funscript.import")
         row = bcol.row(align=True)
@@ -172,8 +172,8 @@ class FunscriptPanel(bpy.types.Panel):
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
         box = row.box()
-        box.label("Hint settings")
         bcol = box.column(align=True)
+        bcol.label("Hint settings")
         row = bcol.row(align=True)
         row.prop(context.scene.funscripting, "script_range")
         row.prop(context.scene.funscripting, "script_interval")
