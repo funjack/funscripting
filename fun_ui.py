@@ -108,8 +108,8 @@ class FunscriptPanel(bpy.types.Panel):
         icon = "FILE_TICK" if interval > settings.script_interval or last["frame"] == 1 else "ERROR"
         if interval > 1000:
             icon = "TIME"
-        mindist = int(fun_script.launch_distance(settings.script_min_speed, interval) * (settings.script_range/100.0))
-        maxdist = int(fun_script.launch_distance(settings.script_max_speed, interval) * (settings.script_range/100.0))
+        mindist = int(fun_script.launch_distance(settings.script_min_speed, interval) * (100.0/settings.script_range))
+        maxdist = int(fun_script.launch_distance(settings.script_max_speed, interval) * (100.0/settings.script_range))
 
         col.label(text="Previous: %d" % last["value"])
         col = row.column(align=True)
@@ -243,8 +243,8 @@ class FunscriptPositionLimitButton(bpy.types.Operator):
                     last = {"frame":frame, "value":value}
         direction = "up" if last["value"] < beforelast["value"] else "down"
         interval = fun_script.frame_to_ms(scene.frame_current) - fun_script.frame_to_ms(last["frame"])
-        mindist = int(fun_script.launch_distance(settings.script_min_speed, interval) * (settings.script_range/100.0))
-        maxdist = int(fun_script.launch_distance(settings.script_max_speed, interval) * (settings.script_range/100.0))
+        mindist = int(fun_script.launch_distance(settings.script_min_speed, interval) * (100.0/settings.script_range))
+        maxdist = int(fun_script.launch_distance(settings.script_max_speed, interval) * (100.0/settings.script_range))
         value = 0
         if self.limitType == "same":
             dist = abs(last["value"] - beforelast["value"])
