@@ -97,6 +97,9 @@ Sequencer Editor):
 - `-`, `Numpad period` : Insert position at 100% at current frame.
 - `` ` ``  : Insert a copy of the previous stroke at current frame.
 - `=`  : Fill up until the current frame with copies of the previous stroke.
+- `,`  : Insert a position with the same length as the last one on the current frame.
+- `.`  : Insert a position with the shortest valid length (slowest) on the current frame.
+- `/`  : Insert a position with the longest valid length (fastest) on the current frame.
 
 Hint label descriptions
 -----------------------

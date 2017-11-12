@@ -122,15 +122,16 @@ def create_funscript(keyframes, inverted, range=90):
         time = frame_to_ms(int(kf.co[0]))
         if time < 0:
             continue
-        value = int(kf.co[1])
-        value = 0 if value < 0 else 100 if value > 100 else value
+        value = clamp(int(kf.co[1]))
         script.append({"at": time, "pos": value})
     return {"version": "1.0", "inverted": inverted, "range": range, "actions": script}
 
+def clamp(value):
+    return 0 if value < 0 else 100 if value > 100 else value
+
 def invert_launch_values(keyframes):
     for kf in keyframes:
-        value = int(kf.co[1])
-        value = 0 if value < 0 else 100 if value > 100 else value
+        value = clamp(int(kf.co[1]))
         kf.co[1] = 100 - value
 
 def shift_launch_values(keyframes):

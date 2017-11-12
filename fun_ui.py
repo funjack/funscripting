@@ -108,8 +108,8 @@ class FunscriptPanel(bpy.types.Panel):
         icon = "FILE_TICK" if interval > settings.script_interval or last["frame"] == 1 else "ERROR"
         if interval > 1000:
             icon = "TIME"
-        mindist = fun_script.launch_distance(settings.script_min_speed, interval)
-        maxdist = fun_script.launch_distance(settings.script_max_speed, interval)
+        mindist = int(fun_script.launch_distance(settings.script_min_speed, interval) * (settings.script_range/100.0))
+        maxdist = int(fun_script.launch_distance(settings.script_max_speed, interval) * (settings.script_range/100.0))
 
         col.label(text="Previous: %d" % last["value"])
         col = row.column(align=True)
@@ -119,9 +119,9 @@ class FunscriptPanel(bpy.types.Panel):
         col.label(text="Interval: %d ms" % interval, icon=icon)
         row = bcol.row(align=True)
         col = row.column(align=True)
-        col.label("Slowest: %d" % int(mindist*(settings.script_range/100.0)))
+        col.label("Slowest: %d" % mindist)
         col = row.column(align=True)
-        col.label("Fastest: %d" % int(maxdist*(settings.script_range/100.0)))
+        col.label("Fastest: %d" % maxdist)
 
     def draw(self, context):
         self.limitinfo(context)
@@ -138,6 +138,10 @@ class FunscriptPanel(bpy.types.Panel):
             else:
                 for i in range(x,x+30,10):
                     row.operator("funscript.position", text=str(i)).launchPosition=i
+        row = bcol.row(align=True)
+        row.operator("funscript.positionlimit", text="Same").limitType="same"
+        row.operator("funscript.positionlimit", text="Shortest").limitType="shortest"
+        row.operator("funscript.positionlimit", text="Longest").limitType="longest"
 
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
@@ -200,6 +204,59 @@ class FunscriptPositionButton(bpy.types.Operator):
             return{'CANCELLED'}
         seq = context.selected_sequences[0]
         fun_script.insert_position(seq, self.launchPosition, scene.frame_current)
+        scene.frame_set(scene.frame_current)
+        return{'FINISHED'}
+
+class FunscriptPositionLimitButton(bpy.types.Operator):
+    """Position input button based on a limit.
+
+    Button that inserts a Launch position in the currently selected Sequence
+    based on the limit.
+    """
+    bl_idname = "funscript.positionlimit"
+    bl_label = "Position limit"
+    bl_options = {'REGISTER', 'UNDO'}
+    limitType = bpy.props.StringProperty()
+
+    def execute(self, context):
+        scene = context.scene
+        if len(context.selected_sequences) < 1:
+            self.report({'ERROR_INVALID_CONTEXT'}, "No sequence selected.")
+            return{'CANCELLED'}
+        settings = scene.funscripting
+        seq = context.selected_sequences[0]
+        keyframes = fun_script.launch_keyframes(seq.name)
+
+        # XXX clean this up :)
+        beforelast = {"frame":1, "value":0}
+        last = {"frame":1, "value":0}
+        if keyframes is not None:
+            for kf in reversed(keyframes):
+                frame = kf.co[0]
+                value = kf.co[1]
+                if last["frame"] > 1:
+                    beforelast = {"frame":frame, "value":value}
+                    break
+                if frame > scene.frame_current:
+                    continue
+                if frame < scene.frame_current:
+                    last = {"frame":frame, "value":value}
+        direction = "up" if last["value"] < beforelast["value"] else "down"
+        interval = fun_script.frame_to_ms(scene.frame_current) - fun_script.frame_to_ms(last["frame"])
+        mindist = int(fun_script.launch_distance(settings.script_min_speed, interval) * (settings.script_range/100.0))
+        maxdist = int(fun_script.launch_distance(settings.script_max_speed, interval) * (settings.script_range/100.0))
+        value = 0
+        if self.limitType == "same":
+            dist = abs(last["value"] - beforelast["value"])
+            value = last["value"]+dist if direction == "up" else last["value"]-dist
+        elif self.limitType == "shortest":
+            value = last["value"]+mindist if direction == "up" else last["value"]-mindist
+        elif self.limitType == "longest":
+            value = last["value"]+maxdist if direction == "up" else last["value"]-maxdist
+        else:
+            self.report({'ERROR_INVALID_CONTEXT'}, "Invalid limit operation.")
+            return{'CANCELLED'}
+        fun_script.insert_position(seq, fun_script.clamp(value), scene.frame_current)
         scene.frame_set(scene.frame_current)
         return{'FINISHED'}
 

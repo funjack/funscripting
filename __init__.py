@@ -127,6 +127,16 @@ def register():
         kmi.properties.launchPosition = 100
         addon_keymaps.append((km, kmi))
 
+        kmi = km.keymap_items.new(fun_ui.FunscriptPositionLimitButton.bl_idname, 'COMMA', 'PRESS')
+        kmi.properties.limitType = "same"
+        addon_keymaps.append((km, kmi))
+        kmi = km.keymap_items.new(fun_ui.FunscriptPositionLimitButton.bl_idname, 'PERIOD', 'PRESS')
+        kmi.properties.limitType = "shortest"
+        addon_keymaps.append((km, kmi))
+        kmi = km.keymap_items.new(fun_ui.FunscriptPositionLimitButton.bl_idname, 'SLASH', 'PRESS')
+        kmi.properties.limitType = "longest"
+        addon_keymaps.append((km, kmi))
+
 def unregister():
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)
