@@ -64,7 +64,7 @@ class FunscriptSettings(bpy.types.PropertyGroup):
         name = "Min interval",
         description="Minimal interval in ms to alert on",
         subtype = "TIME",
-        default = 100,
+        default = 150,
         min = 100,
         max = 200)
 
