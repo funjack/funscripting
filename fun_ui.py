@@ -151,6 +151,17 @@ class FunscriptPanel(bpy.types.Panel):
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
         box = row.box()
+        box.label(text="Selection")
+        bcol = box.column(align=True)
+        row = bcol.row(align=True)
+        row.operator("funscript.selectioninvert")
+        row = bcol.row(align=True)
+        row.operator("funscript.selectionshiftleft")
+        row.operator("funscript.selectionshiftright")
+
+        row = layout.row(align=True)
+        row.alignment = 'EXPAND'
+        box = row.box()
         box.label("Import/Export Funscript")
         bcol = box.column(align=True)
         row = bcol.row(align=True)
@@ -313,3 +324,64 @@ class FunscriptImport(bpy.types.Operator):
     def invoke(self, context, event):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
+
+class FunscriptSelectionInvert(bpy.types.Operator):
+    """Invert the Launch value for selected points.
+
+    Button that will invert the Launch value for all the selected keyframes.
+    """
+    bl_idname = "funscript.selectioninvert"
+    bl_label = "Invert"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        if len(context.selected_sequences) < 1:
+            self.report({'ERROR_INVALID_CONTEXT'}, "No sequence selected.")
+            return{'CANCELLED'}
+        seq = context.selected_sequences[0]
+        keyframes = fun_script.launch_keyframes(seq.name)
+        fun_script.invert_launch_values(fun_script.selected_keyframes(keyframes))
+        scene.frame_set(scene.frame_current)
+        return{'FINISHED'}
+
+class FunscriptSelectionShiftRight(bpy.types.Operator):
+    """Shift all the Launch values for selected points to the right.
+
+    Button that will shift all values one keyframe to the right.
+    """
+    bl_idname = "funscript.selectionshiftright"
+    bl_label = "Shift right"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        if len(context.selected_sequences) < 1:
+            self.report({'ERROR_INVALID_CONTEXT'}, "No sequence selected.")
+            return{'CANCELLED'}
+        seq = context.selected_sequences[0]
+        keyframes = fun_script.launch_keyframes(seq.name)
+        fun_script.shift_launch_values(fun_script.selected_keyframes(keyframes))
+        scene.frame_set(scene.frame_current)
+        return{'FINISHED'}
+
+
+class FunscriptSelectionShiftLeft(bpy.types.Operator):
+    """Shift all the Launch values for selected points to the left.
+
+    Button that will shift all values one keyframe to the left.
+    """
+    bl_idname = "funscript.selectionshiftleft"
+    bl_label = "Shift left"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        if len(context.selected_sequences) < 1:
+            self.report({'ERROR_INVALID_CONTEXT'}, "No sequence selected.")
+            return{'CANCELLED'}
+        seq = context.selected_sequences[0]
+        keyframes = fun_script.launch_keyframes(seq.name)
+        fun_script.shift_launch_values(reversed(list(fun_script.selected_keyframes(keyframes))))
+        scene.frame_set(scene.frame_current)
+        return{'FINISHED'}

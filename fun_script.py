@@ -122,12 +122,31 @@ def create_funscript(keyframes, inverted, range=90):
         if time < 0:
             continue
         value = int(kf.co[1])
-        if value < 0:
-            value = 0
-        elif value > 100:
-            value = 100
+        value = 0 if value < 0 else 100 if value > 100 else value
         script.append({"at": time, "pos": value})
     return {"version": "1.0", "inverted": inverted, "range": range, "actions": script}
+
+def invert_launch_values(keyframes):
+    for kf in keyframes:
+        value = int(kf.co[1])
+        value = 0 if value < 0 else 100 if value > 100 else value
+        kf.co[1] = 100 - value
+
+def shift_launch_values(keyframes):
+    prev = None
+    for kf in keyframes:
+        if prev is None:
+            prev = kf.co[1]
+            continue
+        new = prev
+        prev = kf.co[1]
+        kf.co[1] = new
+
+def selected_keyframes(keyframe_points):
+    """Generator that yields selected keyframes."""
+    for k in keyframe_points:
+        if k.select_control_point:
+            yield k
 
 def launch_keyframes(name):
     """Return all keyframes from all actions fcurves in prop 'launch'."""
