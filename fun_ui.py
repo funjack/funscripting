@@ -241,7 +241,7 @@ class FunscriptPositionLimitButton(bpy.types.Operator):
                     continue
                 if frame < scene.frame_current:
                     last = {"frame":frame, "value":value}
-        direction = "up" if last["value"] < beforelast["value"] else "down"
+        direction = "up" if last["value"] < beforelast["value"] or last["value"] == 0 else "down"
         interval = fun_script.frame_to_ms(scene.frame_current) - fun_script.frame_to_ms(last["frame"])
         mindist = int(fun_script.launch_distance(settings.script_min_speed, interval) * (100.0/settings.script_range))
         maxdist = int(fun_script.launch_distance(settings.script_max_speed, interval) * (100.0/settings.script_range))
