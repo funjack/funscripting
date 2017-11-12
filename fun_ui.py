@@ -154,6 +154,7 @@ class FunscriptPanel(bpy.types.Panel):
         bcol = box.column(align=True)
         bcol.label(text="Selection operations")
         row = bcol.row(align=True)
+        row.operator("funscript.selectionaverage")
         row.operator("funscript.selectioninvert")
         row = bcol.row(align=True)
         row.operator("funscript.selectionshiftleft")
@@ -383,5 +384,26 @@ class FunscriptSelectionShiftLeft(bpy.types.Operator):
         seq = context.selected_sequences[0]
         keyframes = fun_script.launch_keyframes(seq.name)
         fun_script.shift_launch_values(reversed(list(fun_script.selected_keyframes(keyframes))))
+        scene.frame_set(scene.frame_current)
+        return{'FINISHED'}
+
+class FunscriptSelectionAverage(bpy.types.Operator):
+    """Average out the the Launch values of all even and odd points.
+
+    Button that will average out the values in all the even points and odd
+    points resulting a stable stroke pattern.
+    """
+    bl_idname = "funscript.selectionaverage"
+    bl_label = "Average"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        if len(context.selected_sequences) < 1:
+            self.report({'ERROR_INVALID_CONTEXT'}, "No sequence selected.")
+            return{'CANCELLED'}
+        seq = context.selected_sequences[0]
+        keyframes = fun_script.launch_keyframes(seq.name)
+        fun_script.average_even_odd_keyframes(fun_script.selected_keyframes(keyframes))
         scene.frame_set(scene.frame_current)
         return{'FINISHED'}

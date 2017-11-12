@@ -30,6 +30,7 @@
 # ##### END BSD LICENSE BLOCK #####
 
 import bpy
+from itertools import islice
 
 def insert_actions(seq, actions, offset=0):
     """Insert into seq positions from the actions dict"""
@@ -147,6 +148,30 @@ def selected_keyframes(keyframe_points):
     for k in keyframe_points:
         if k.select_control_point:
             yield k
+
+def even_keyframes(keyframe_points):
+    """Generator that yields all even keyframes."""
+    for k in islice(keyframe_points, 0, None, 2):
+        yield k
+
+def odd_keyframes(keyframe_points):
+    """Generator that yields all odd keyframes."""
+    for k in islice(keyframe_points, 1, None, 2):
+        yield k
+
+def average_even_odd_keyframes(keyframe_points):
+    """Average out all the even and odd frames in given points."""
+    kp = list(keyframe_points)
+    even = list(even_keyframes(kp))
+    odd = list(odd_keyframes(kp))
+    if len(even) > 0:
+        even_avg = sum(int(k.co[1]) for k in even) / len(even)
+        for k in even:
+            k.co[1] = int(even_avg)
+    if len(odd) > 0:
+        odd_avg = sum(int(k.co[1]) for k in odd) / len(odd)
+        for k in odd:
+            k.co[1] = int(odd_avg)
 
 def launch_keyframes(name):
     """Return all keyframes from all actions fcurves in prop 'launch'."""
