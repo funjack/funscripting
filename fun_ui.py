@@ -122,6 +122,13 @@ class FunscriptPanel(bpy.types.Panel):
         col.label("Slowest: %d" % mindist)
         col = row.column(align=True)
         col.label("Fastest: %d" % maxdist)
+        row = bcol.row(align=True)
+        col = row.column(align=True)
+        laststroke = fun_script.last_stroke(seq, scene.frame_current)
+        if laststroke is not None:
+            up = fun_script.frame_to_ms(laststroke[1]["frame"])
+            down = fun_script.frame_to_ms(laststroke[2]["frame"])
+            col.label("Last stroke: %d+%d=%d ms" % (up, down, up+down))
 
     def draw(self, context):
         self.limitinfo(context)
