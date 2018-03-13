@@ -31,6 +31,7 @@
 
 import bpy
 import json
+from bpy_extras.io_utils import ExportHelper,ImportHelper
 
 from . import fun_script
 
@@ -343,7 +344,7 @@ class FunscriptFillButton(bpy.types.Operator):
             scene.frame_set(lastframe)
         return{'FINISHED'}
 
-class FunscriptExport(bpy.types.Operator):
+class FunscriptExport(bpy.types.Operator, ExportHelper):
     """Export as Funscript file button.
 
     Button that exports all Launch position keyframes in the sequences as
@@ -351,7 +352,13 @@ class FunscriptExport(bpy.types.Operator):
     """
     bl_idname = "funscript.export"
     bl_label = "Export as Funscript"
-    filepath = bpy.props.StringProperty(subtype='FILE_PATH')
+
+    filename_ext = ".funscript"
+    filter_glob = bpy.props.StringProperty(
+            default="*.funscript",
+            options={'HIDDEN'},
+            maxlen=255,
+            )
     inverted = bpy.props.BoolProperty(name="inverted",
         description="Flip up and down positions", default=False)
 
@@ -369,15 +376,7 @@ class FunscriptExport(bpy.types.Operator):
             json.dump(script, outfile)
         return {'FINISHED'}
 
-    def draw(self,context):
-        layout = self.layout
-        layout.prop(self, "inverted", text="Inverted")
-
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
-        return {'RUNNING_MODAL'}
-
-class FunscriptImport(bpy.types.Operator):
+class FunscriptImport(bpy.types.Operator, ImportHelper):
     """Import as Funscript file button.
 
     Button that imports Launch position keyframes in the sequences from a
@@ -386,7 +385,13 @@ class FunscriptImport(bpy.types.Operator):
     bl_idname = "funscript.import"
     bl_label = "Import Funscript on frame"
     bl_options = {'REGISTER', 'UNDO'}
-    filepath = bpy.props.StringProperty(subtype='FILE_PATH')
+
+    filename_ext = ".funscript"
+    filter_glob = bpy.props.StringProperty(
+            default="*.funscript",
+            options={'HIDDEN'},
+            maxlen=255,
+            )
 
     def execute(self, context):
         if len(context.selected_sequences) < 1:
@@ -400,10 +405,6 @@ class FunscriptImport(bpy.types.Operator):
                 return{'CANCELLED'}
             fun_script.insert_actions(seq, fs["actions"], context.scene.frame_current)
         return {'FINISHED'}
-
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
-        return {'RUNNING_MODAL'}
 
 class FunscriptSelectionInvert(bpy.types.Operator):
     """Invert the Launch value for selected points.
