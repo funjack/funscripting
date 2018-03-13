@@ -137,7 +137,7 @@ class FunscriptPanel(bpy.types.Panel):
         box = row.box()
         bcol = box.column(align=True)
         bcol.label(text="Insert position")
-        for x in [0, 10, 40, 70, 100]:
+        for x in [100, 70, 40, 10, 0]:
             row = bcol.row(align=True)
             row.alignment = 'EXPAND'
             if x == 0 or x == 100:
