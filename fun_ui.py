@@ -113,7 +113,7 @@ class FunscriptPanel(bpy.types.Panel):
 
         col.label(text="Previous: %d" % last["value"])
         col = row.column(align=True)
-        col.operator("funscript.delete", text="Delete").frame=last["frame"]
+        col.operator("funscript.delete", text="Delete").last=True
         row = bcol.row(align=True)
         col = row.column(align=True)
         col.label(text="Interval: %d ms" % interval, icon=icon)
@@ -276,6 +276,7 @@ class FunscriptDeleteButton(bpy.types.Operator):
     bl_label = "Delete"
     bl_options = {'REGISTER', 'UNDO'}
     frame = bpy.props.IntProperty()
+    last = bpy.props.BoolProperty()
 
     def execute(self, context):
         scene = context.scene
@@ -283,7 +284,21 @@ class FunscriptDeleteButton(bpy.types.Operator):
             self.report({'ERROR_INVALID_CONTEXT'}, "No sequence selected.")
             return{'CANCELLED'}
         seq = context.selected_sequences[0]
-        fun_script.delete_position(seq, self.frame)
+        delete_frame = self.frame
+        if self.last:
+            keyframes = fun_script.launch_keyframes(seq.name)
+            last = {"frame":1, "value":0}
+            if keyframes is not None:
+                for kf in reversed(keyframes):
+                    frame = kf.co[0]
+                    value = kf.co[1]
+                    if frame > scene.frame_current:
+                        continue
+                    if frame < scene.frame_current:
+                        last = {"frame":frame, "value":value}
+                        break
+            delete_frame = last["frame"]
+        fun_script.delete_position(seq, delete_frame)
         scene.frame_set(scene.frame_current)
         return{'FINISHED'}
 

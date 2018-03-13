@@ -127,6 +127,10 @@ def register():
         kmi.properties.launchPosition = 100
         addon_keymaps.append((km, kmi))
 
+        kmi = km.keymap_items.new(fun_ui.FunscriptDeleteButton.bl_idname, 'DEL', 'PRESS', ctrl=True)
+        kmi.properties.last = True
+        addon_keymaps.append((km, kmi))
+
         kmi = km.keymap_items.new(fun_ui.FunscriptPositionLimitButton.bl_idname, 'COMMA', 'PRESS')
         kmi.properties.limitType = "same"
         addon_keymaps.append((km, kmi))
