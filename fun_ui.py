@@ -142,7 +142,8 @@ class FunscriptPanel(bpy.types.Panel):
             row = bcol.row(align=True)
             row.alignment = 'EXPAND'
             if x == 0 or x == 100:
-                row.operator("funscript.position", text=str(x)).launchPosition=x
+                label = "%d (%s)" % (x, "Up" if x == 100 else "Down")
+                row.operator("funscript.position", text=label).launchPosition=x
             else:
                 for i in range(x,x+30,10):
                     row.operator("funscript.position", text=str(i)).launchPosition=i
