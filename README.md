@@ -84,7 +84,7 @@ When you are done scripting, save the result as a Funscript by pressing the
 
 Move the file next to a movie and make sure it has the `.funscript` file
 extension. Use Kodi or VLC with a Launchcontrol plugin to play. Here is a short
-[demo video](https://vid.me/HpwK).
+[demo video](reupload).
 
 
 Shortcuts
