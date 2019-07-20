@@ -36,6 +36,7 @@ bl_info = {
     "location": "Sequencer",
     "description": "Script Launch haptics data and export as Funscript.",
     "category": "Sequencer",
+    "blender": (2, 80, 0),
 }
 
 if "bpy" in locals():
@@ -47,8 +48,25 @@ from . import fun_ui
 
 addon_keymaps = []
 
+classes = (
+    fun_ui.FunscriptSettings,
+    fun_ui.FunscriptPanel,
+    fun_ui.FunscriptPositionButton,
+    fun_ui.FunscriptPositionLimitButton,
+    fun_ui.FunscriptDeleteButton,
+    fun_ui.FunscriptRepeatButton,
+    fun_ui.FunscriptFillButton,
+    fun_ui.FunscriptExport,
+    fun_ui.FunscriptImport,
+    fun_ui.FunscriptSelectionInvert,
+    fun_ui.FunscriptSelectionShiftRight,
+    fun_ui.FunscriptSelectionShiftLeft,
+    fun_ui.FunscriptSelectionAverage,
+)
+
 def register():
-    bpy.utils.register_module(__name__)
+    for cls in classes:
+        bpy.utils.register_class(cls)
     bpy.types.Scene.funscripting = bpy.props.PointerProperty(type=fun_ui.FunscriptSettings)
 
     # handle the keymap
@@ -147,7 +165,8 @@ def unregister():
     addon_keymaps.clear()
 
     del bpy.types.Scene.funscripting
-    bpy.utils.unregister_module(__name__)
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
 
 if __name__ == "__main__":
     register()
