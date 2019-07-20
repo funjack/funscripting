@@ -69,7 +69,7 @@ class FunscriptSettings(bpy.types.PropertyGroup):
         min = 100,
         max = 200)
 
-class FunscriptPanel(bpy.types.Panel):
+class FUNSCRIPT_PT_FunscriptPanel(bpy.types.Panel):
     """Funscript UI panel.
 
     Funscript UI panel added to the sequencer.

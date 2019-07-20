@@ -50,7 +50,7 @@ addon_keymaps = []
 
 classes = (
     fun_ui.FunscriptSettings,
-    fun_ui.FunscriptPanel,
+    fun_ui.FUNSCRIPT_PT_FunscriptPanel,
     fun_ui.FunscriptPositionButton,
     fun_ui.FunscriptPositionLimitButton,
     fun_ui.FunscriptDeleteButton,
