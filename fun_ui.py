@@ -120,16 +120,16 @@ class FunscriptPanel(bpy.types.Panel):
         col.label(text="Interval: %d ms" % interval, icon=icon)
         row = bcol.row(align=True)
         col = row.column(align=True)
-        col.label("Slowest: %d" % mindist)
+        col.label(text="Slowest: %d" % mindist)
         col = row.column(align=True)
-        col.label("Fastest: %d" % maxdist)
+        col.label(text="Fastest: %d" % maxdist)
         row = bcol.row(align=True)
         col = row.column(align=True)
         laststroke = fun_script.last_stroke(seq, scene.frame_current)
         if laststroke is not None:
             up = fun_script.frame_to_ms(laststroke[1]["frame"])
             down = fun_script.frame_to_ms(laststroke[2]["frame"])
-            col.label("Last stroke: %d+%d=%d ms" % (up, down, up+down))
+            col.label(text="Last stroke: %d+%d=%d ms" % (up, down, up+down))
 
     def draw(self, context):
         self.limitinfo(context)
@@ -177,7 +177,7 @@ class FunscriptPanel(bpy.types.Panel):
         row.alignment = 'EXPAND'
         box = row.box()
         bcol = box.column(align=True)
-        bcol.label("Import/Export Funscript")
+        bcol.label(text="Import/Export Funscript")
         row = bcol.row(align=True)
         row.operator("funscript.import")
         row = bcol.row(align=True)
@@ -187,7 +187,7 @@ class FunscriptPanel(bpy.types.Panel):
         row.alignment = 'EXPAND'
         box = row.box()
         bcol = box.column(align=True)
-        bcol.label("Hint settings")
+        bcol.label(text="Hint settings")
         row = bcol.row(align=True)
         row.prop(context.scene.funscripting, "script_range")
         row.prop(context.scene.funscripting, "script_interval")
