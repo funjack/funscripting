@@ -40,28 +40,28 @@ class FunscriptSettings(bpy.types.PropertyGroup):
 
     Funscript user settings that are used by all other components.
     """
-    script_range = bpy.props.IntProperty(
+    script_range : bpy.props.IntProperty(
         name = "Range",
         description = "Range of the Launch to use",
         subtype = "PERCENTAGE",
         default = 90,
         min = 10,
         max = 100)
-    script_min_speed = bpy.props.IntProperty(
+    script_min_speed : bpy.props.IntProperty(
         name = "Min speed",
         description="Minimal speed to hint for",
         subtype = "PERCENTAGE",
         default = 20,
         min = 20,
         max = 80)
-    script_max_speed = bpy.props.IntProperty(
+    script_max_speed : bpy.props.IntProperty(
         name = "Max speed",
         description="Maximum speed to hint for",
         subtype = "PERCENTAGE",
         default = 80,
         min = 20,
         max = 90)
-    script_interval = bpy.props.IntProperty(
+    script_interval : bpy.props.IntProperty(
         name = "Min interval",
         description="Minimal interval in ms to alert on",
         subtype = "TIME",
@@ -204,7 +204,7 @@ class FunscriptPositionButton(bpy.types.Operator):
     bl_idname = "funscript.position"
     bl_label = "Position"
     bl_options = {'REGISTER', 'UNDO'}
-    launchPosition = bpy.props.IntProperty()
+    launchPosition : bpy.props.IntProperty()
 
     def execute(self, context):
         scene = context.scene
@@ -225,7 +225,7 @@ class FunscriptPositionLimitButton(bpy.types.Operator):
     bl_idname = "funscript.positionlimit"
     bl_label = "Position limit"
     bl_options = {'REGISTER', 'UNDO'}
-    limitType = bpy.props.StringProperty()
+    limitType : bpy.props.StringProperty()
 
     def execute(self, context):
         scene = context.scene
@@ -277,8 +277,8 @@ class FunscriptDeleteButton(bpy.types.Operator):
     bl_idname = "funscript.delete"
     bl_label = "Delete"
     bl_options = {'REGISTER', 'UNDO'}
-    frame = bpy.props.IntProperty()
-    last = bpy.props.BoolProperty()
+    frame : bpy.props.IntProperty()
+    last : bpy.props.BoolProperty()
 
     def execute(self, context):
         scene = context.scene
@@ -355,12 +355,12 @@ class FunscriptExport(bpy.types.Operator, ExportHelper):
     bl_label = "Export as Funscript"
 
     filename_ext = ".funscript"
-    filter_glob = bpy.props.StringProperty(
+    filter_glob : bpy.props.StringProperty(
             default="*.funscript",
             options={'HIDDEN'},
             maxlen=255,
             )
-    inverted = bpy.props.BoolProperty(name="inverted",
+    inverted : bpy.props.BoolProperty(name="inverted",
         description="Flip up and down positions", default=False)
 
     def execute(self, context):
@@ -388,7 +388,7 @@ class FunscriptImport(bpy.types.Operator, ImportHelper):
     bl_options = {'REGISTER', 'UNDO'}
 
     filename_ext = ".funscript"
-    filter_glob = bpy.props.StringProperty(
+    filter_glob : bpy.props.StringProperty(
             default="*.funscript",
             options={'HIDDEN'},
             maxlen=255,
